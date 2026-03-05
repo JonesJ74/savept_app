@@ -3,6 +3,7 @@
 import withAuth from "../../hoc/withAuth";
 import Link from "next/link";
 import LogoutButton from "@/components/logout";
+import ReviewCard from "@/components/reviews/reviewCard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -42,16 +43,9 @@ export default function Dashboard() {
         <p>You have not written any reviews yet</p>
       )}
 
+      
       {reviews.map((review) => (
-        <div
-          key={review.id}
-          className="border p-4 rounded mb-4"
-        >
-          <h2 className="font-bold">{review.game_title}</h2>
-          <p>Status: {review.status}</p>
-          <p>Rating: {review.rating}/10</p>
-          <p>{review.review_text}</p>
-        </div>
+        <ReviewCard key={review.id} review={review} />
       ))}
 
        <nav className="mb-6">
