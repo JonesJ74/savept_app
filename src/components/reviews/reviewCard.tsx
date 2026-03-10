@@ -1,4 +1,5 @@
 import DeleteCard from "./delete"
+import EditReview from "./editCard"
 
 export default function ReviewCard({ review }: any) {
   return ( 
@@ -10,6 +11,7 @@ export default function ReviewCard({ review }: any) {
         
 
         <div className="flex gap-3 mt-3">
+          <EditReview id={review.id} />
           <DeleteCard id={review.id} />
         </div>
         </div>
