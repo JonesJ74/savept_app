@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { useRouter } from "next/navigation";
+import LoadSpinner from "@/components/loadSpinner"
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,12 +11,14 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
 
+
   const handleLogin = async (e) => {
     e.preventDefault(); //prevent page refresh on click
     const { data, error } = await supabase.auth.signInWithPassword({ email, password }); //supabase calls user sign in
     if (error) setErrorMsg(error.message);
     else router.push("/dashboard"); // Redirect to protected page
     }
+      
 
     return (
     <div className="container">

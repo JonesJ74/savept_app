@@ -6,6 +6,8 @@ import LogoutButton from "@/components/logout";
 import ReviewCard from "@/components/reviews/reviewCard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import LoadSpinner from "@/components/loadSpinner"
+import CreateReviewButton from "@/components/CreateReview"
 
 
 export default function Dashboard() {
@@ -34,6 +36,10 @@ export default function Dashboard() {
       fetchReviews()
     }, [])
 
+    if (loading) {
+          return <LoadSpinner text="Loading.." />
+    }
+
     return (
       <div className="p-6">
       <h1>Your Reviews</h1>
@@ -49,12 +55,7 @@ export default function Dashboard() {
       ))}
 
        <nav className="mb-6">
-        <Link
-          href="/reviews"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Create a review
-        </Link>
+        <CreateReviewButton />
       </nav>
 
       <LogoutButton />

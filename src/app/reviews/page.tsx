@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FormEvent } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { useRouter } from "next/navigation";
-
+import LoadSpinner from "@/components/loadSpinner"
 
 type gameStatus = 
     | "Currently Playing"
@@ -34,6 +34,22 @@ export default function ReviewPage(){
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        //validation checks
+        if (!gameTitle.trim()){
+            setErrorMsg("Insert game title")
+            return
+        }
+        if (rating < 1 || rating > 10){
+            setErrorMsg("Rating must be between 1 and 10")
+            return
+        }
+
+        if (hoursPlayed < 0){
+            setErrorMsg("Cannot have negative hours played")
+            return
+        }
+
         setLoading(true);
         setErrorMsg("");
         //gets profile data from supabase, if user not defined route back to login page 
@@ -71,7 +87,14 @@ export default function ReviewPage(){
     } finally {
         setLoading(false);
     }
+
     };
+
+    if (loading) {
+          return <LoadSpinner text="Loading.." />
+    }
+
+
     return (
         <div>
             <h1>Create Savepoint Review</h1>
@@ -79,7 +102,6 @@ export default function ReviewPage(){
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Game title"
                     value={gameTitle}
                     onChange={(e) => setGameTitle(e.target.value)}
                     required

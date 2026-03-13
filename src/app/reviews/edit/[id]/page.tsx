@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { FormEvent } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter, useParams } from "next/navigation";    
-
+import LoadSpinner from "@/components/loadSpinner"
 
 
 type gameStatus = 
@@ -28,8 +28,12 @@ export default function EditReviewPage (){
     const[recommend, setRecommend] = useState<boolean | null>(null);
     const[isPublic, setIsPublic] = useState(true);
     const[status, setStatus] = useState<gameStatus>("On Wishlist");
+    
+    //loading state variables
     const[loading, setLoading] = useState(true);
-
+    const[update, setUpdate] = useState(false);
+    const[errorMsg, setErrorMsg] = useState("");
+    
     useEffect(() => {
         const fetchReview = async () => {
             const {data, error} = await supabase
@@ -53,6 +57,24 @@ export default function EditReviewPage (){
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
+
+        setUpdate(true)
+        //validation checks
+            if (!gameTitle.trim()){
+                setErrorMsg("Insert game title")
+                return
+            }
+            if (rating < 1 || rating > 10){
+                setErrorMsg("Rating must be between 1 and 10")
+                return
+            }
+
+            if (hoursPlayed < 0){
+                setErrorMsg("Cannot have negative hours played")
+                return
+            }
+
+        
         const { error } = await supabase
         .from("reviews")
         .update({
@@ -68,11 +90,23 @@ export default function EditReviewPage (){
 
         if (error) {
             console.error("Error updating review", error)
+            setUpdate(false)
             return
         }
 
+        //creates loading state for review
+        if (loading) {
+            return <LoadSpinner text="Updating.." />
+        }
     router.push("/dashboard")
     }
+
+    //creates loading state for review
+    if (loading) {
+        return <LoadSpinner text="Loading.." />
+    }
+
+
     return (
         <div>
             <h1>Edit Savepoint Review</h1>
@@ -158,10 +192,10 @@ export default function EditReviewPage (){
 
                     <button
                         type="submit"
-                        disabled={loading}
+                        disabled={update}
                         className="bg-blue-600 text-white px-4 py-2 rounded"
                     >
-                        Update Review
+                        {update ? "Updating..." : "Update Review"}
                     </button>
                 </div>
 
